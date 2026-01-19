@@ -1,8 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="min-h-screen pt-24 pb-20 bg-slate-950 relative overflow-hidden"
-        x-data="cartLogic(@js($cart ? $cart->items->load('book') : []))">
+    <div class="min-h-screen pt-24 pb-20 bg-slate-950 relative overflow-hidden" x-data="cartLogic(
+                    @js($cart ? $cart->items->load('book') : []),
+                    @js($cart->voucher_id ?? null),
+                    @js($vouchers)
+                )">
 
         {{-- Background Aesthetic --}}
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none">
@@ -172,14 +175,82 @@
                         </div>
 
                         {{-- Promo Code --}}
+                        {{-- Voucher Selection --}}
                         <div class="bg-slate-900/40 border border-white/5 rounded-3xl p-6">
-                            <h4 class="text-sm font-bold text-white mb-3">Kode Promo?</h4>
-                            <div class="flex gap-2">
-                                <input type="text" placeholder="Masukkan kode"
-                                    class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all">
-                                <button
-                                    class="px-4 py-2 bg-slate-800 text-white font-bold text-xs rounded-xl hover:bg-slate-700 transition-colors">Gunakan</button>
-                            </div>
+                            <h4 class="text-sm font-bold text-white mb-3">Pilih Voucher</h4>
+
+                            <template x-if="vouchers.length === 0">
+                                <p class="text-slate-500 text-xs">Anda belum memiliki voucher. <a
+                                        href="{{ route('events.index') }}" class="text-blue-500 hover:underline">Lihat
+                                        Event</a></p>
+                            </template>
+
+                            <template x-if="vouchers.length > 0">
+                                <div class="space-y-4">
+                                    {{-- Custom Dropdown --}}
+                                    <div class="relative" x-data="{ open: false }">
+                                        
+                                        {{-- Trigger --}}
+                                        <button @click="open = !open" @click.away="open = false"
+                                            class="w-full bg-slate-950 border border-slate-700/50 rounded-xl px-4 py-3 flex items-center justify-between text-left hover:border-blue-500/50 transition-colors focus:ring-2 focus:ring-blue-500/20">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+                                                </div>
+                                                <div>
+                                                    <span class="block text-sm font-bold text-white" x-text="selectedVoucher ? selectedVoucher.title : 'Pilih Voucher'"></span>
+                                                    <span class="block text-xs text-slate-500" x-text="selectedVoucher ? selectedVoucher.code : 'Hemat dengan voucher'"></span>
+                                                </div>
+                                            </div>
+                                            <svg class="w-5 h-5 text-slate-500 transition-transform duration-300" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                        </button>
+
+                                        {{-- Menu --}}
+                                        <div x-show="open" 
+                                             x-transition:enter="transition ease-out duration-200"
+                                             x-transition:enter-start="opacity-0 translate-y-2"
+                                             x-transition:enter-end="opacity-100 translate-y-0"
+                                             x-transition:leave="transition ease-in duration-150"
+                                             x-transition:leave-start="opacity-100 translate-y-0"
+                                             x-transition:leave-end="opacity-0 translate-y-2"
+                                             class="absolute bottom-full left-0 right-0 mb-2 bg-slate-900 border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                                            
+                                            <div class="p-2 space-y-1">
+                                                <template x-for="voucher in vouchers" :key="voucher.id">
+                                                    <button @click="applyVoucher(voucher.id); open = false"
+                                                        class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors group text-left"
+                                                        :class="{'bg-blue-500/10': voucherId == voucher.id}">
+                                                        
+                                                        <div class="flex items-center gap-3">
+                                                            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
+                                                                :class="voucherId == voucher.id ? 'bg-blue-500 text-white' : 'bg-slate-800 text-slate-400'">
+                                                                %
+                                                            </div>
+                                                            <div>
+                                                                <p class="text-sm font-bold text-white group-hover:text-blue-400" x-text="voucher.title"></p>
+                                                                <p class="text-xs text-slate-400" x-text="voucher.code"></p>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <span class="text-xs font-bold px-2 py-1 rounded bg-slate-950 text-emerald-400 border border-emerald-500/20"
+                                                            x-text="voucher.type === 'percentage' ? voucher.reward_amount + '%' : formatRupiah(voucher.reward_amount)"></span>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    {{-- Selected Voucher Info (Keep existing remove button logic but clearer) --}}
+                                    <template x-if="selectedVoucher">
+                                        <div class="flex justify-end">
+                                             <button @click="applyVoucher(null)" class="text-xs text-red-400 hover:text-red-300 font-bold hover:underline">
+                                                Lepas Voucher
+                                            </button>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
                         </div>
 
                     </div>
@@ -192,11 +263,18 @@
 
     @push('scripts')
         <script>
-            function cartLogic(initialItems) {
+            function cartLogic(initialItems, initialVoucherId, availableVouchers) {
                 return {
                     items: initialItems,
                     selected: [],
                     selectAll: false,
+                    voucherId: initialVoucherId,
+                    vouchers: availableVouchers,
+
+                    init() {
+                        this.selected = this.items.map(i => i.id); // Auto select all initially
+                        this.selectAll = true;
+                    },
 
                     get itemsCount() {
                         // Ensure ID comparison is type-safe
@@ -209,13 +287,24 @@
                             .reduce((acc, i) => acc + (Number(i.book.final_price || i.book.price) * i.qty), 0);
                     },
 
+                    get selectedVoucher() {
+                        return this.vouchers.find(v => v.id == this.voucherId);
+                    },
+
                     get discount() {
-                        // Simple discount logic (Example: 5% if subtotal > 100k)
-                        return this.subtotal > 100000 ? this.subtotal * 0.05 : 0;
+                        const voucher = this.selectedVoucher;
+                        if (!voucher) return 0;
+
+                        if (this.subtotal < voucher.min_spend) return 0;
+
+                        if (voucher.type === 'percentage') {
+                            return this.subtotal * (voucher.reward_amount / 100);
+                        }
+                        return Math.min(Number(voucher.reward_amount), this.subtotal);
                     },
 
                     get total() {
-                        return this.subtotal - this.discount;
+                        return Math.max(0, this.subtotal - this.discount);
                     },
 
                     toggleAll() {
@@ -224,6 +313,22 @@
 
                     formatRupiah(angka) {
                         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+                    },
+
+                    async applyVoucher(id) {
+                        this.voucherId = id;
+                        try {
+                            await fetch("{{ route('cart.apply_voucher') }}", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                                },
+                                body: JSON.stringify({ voucher_id: id })
+                            });
+                        } catch (e) {
+                            console.error('Failed to apply voucher', e);
+                        }
                     },
 
                     goToCheckout() {

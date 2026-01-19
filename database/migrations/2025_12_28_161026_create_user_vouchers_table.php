@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,6 +16,7 @@ return new class extends Migration
             $table->foreignId('voucher_id')->constrained()->cascadeOnDelete();
             $table->boolean('is_used')->default(false); // Berubah jadi true saat checkout sukses
             $table->dateTime('claimed_at')->useCurrent();
+            $table->dateTime('expires_at')->nullable(); // Kapan klaim ini kadaluarsa
             $table->timestamps();
         });
     }

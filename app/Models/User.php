@@ -29,4 +29,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function vouchers()
+    {
+        return $this->belongsToMany(Voucher::class, 'user_vouchers')
+            ->withPivot('is_used', 'claimed_at', 'expires_at')
+            ->withTimestamps();
+    }
 }

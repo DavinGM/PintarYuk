@@ -14,9 +14,43 @@ class CartController extends Controller
     // Display Cart Page
     public function index()
     {
-        $cart = Cart::with(['items.book'])->where('user_id', Auth::id())->first();
+        $user = Auth::user();
+        $cart = Cart::with(['items.book', 'voucher'])->where('user_id', $user->id)->first();
 
-        return view('cart.index', compact('cart'));
+        // Get active vouchers for user
+        $vouchers = $user->vouchers()
+            ->wherePivot('is_used', false)
+            ->where(function ($query) {
+                $query->whereNull('user_vouchers.expires_at')
+                    ->orWhere('user_vouchers.expires_at', '>', now());
+            })
+            ->where('expiry_date', '>', now()) // Global expiry
+            ->get();
+
+        return view('cart.index', compact('cart', 'vouchers'));
+    }
+
+    public function applyVoucher(Request $request)
+    {
+        $request->validate(['voucher_id' => 'nullable|exists:vouchers,id']);
+
+        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+
+        if ($request->voucher_id) {
+            // Verify ownership
+            $hasVoucher = Auth::user()->vouchers()
+                ->where('vouchers.id', $request->voucher_id)
+                ->wherePivot('is_used', false)
+                ->exists();
+
+            if (!$hasVoucher) {
+                return response()->json(['status' => 'error', 'message' => 'Voucher invalid or not owned.'], 403);
+            }
+        }
+
+        $cart->update(['voucher_id' => $request->voucher_id]);
+
+        return response()->json(['status' => 'success', 'message' => 'Voucher updated']);
     }
 
     // Add to Cart Logic

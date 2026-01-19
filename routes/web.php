@@ -48,6 +48,7 @@ Route::controller(CartController::class)->middleware('auth')->group(function () 
     Route::get('/cart', 'index')->name('cart.index');
     Route::post('/cart/add', 'addToCart')->name('cart.add');
     Route::patch('/cart/update', 'updateQty')->name('cart.update');
+    Route::post('/cart/apply-voucher', 'applyVoucher')->name('cart.apply_voucher');
     Route::delete('/cart/{id}', 'destroy')->name('cart.destroy');
 });
 
@@ -62,6 +63,10 @@ Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->n
 Route::get('/bookmark', [BookmarkController::class, 'index'])
     ->middleware('auth')
     ->name('bookmark.index');
+
+Route::get('/events', [App\Http\Controllers\Frontend\EventController::class, 'index'])->name('events.index');
+Route::post('/events/{id}/claim', [App\Http\Controllers\Frontend\EventController::class, 'claimVoucher'])->middleware('auth')->name('events.claim');
+Route::get('/my-vouchers', [App\Http\Controllers\Frontend\VoucherController::class, 'index'])->middleware('auth')->name('vouchers.index');
 
 
 
