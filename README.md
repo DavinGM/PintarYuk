@@ -14,4 +14,4 @@ npm install gsap
 
 
 
-![Metrics](https://metrics.lecoq.io/DavinGM)
+![Metrics](https://metrics.lecoq.io/DavinGM)# PintarYuk
