@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Ukuran Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track (Latar belakang scroll) */
+::-webkit-scrollbar-track {
+    background: #0f172a; /* Warna slate-950 sesuai tema Anda */
+}
+
+/* Handle (Tombol scroll yang digeser) */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #4f46e5, #10b981); /* Gradient Indigo ke Emerald */
+    border-radius: 20px;
+    border: 2px solid #0f172a; /* Memberi efek jarak (padding) */
+}
+
+/* Handle saat dihover */
+::-webkit-scrollbar-thumb:hover {
+    background: #6366f1;
+}
