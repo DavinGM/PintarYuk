@@ -1,26 +1,8 @@
-<div style="display:flex; flex-direction:column; gap:16px; align-items:center;">
-
-  <!-- Row Atas: 3 Gambar -->
-  <div style="display:flex; gap:16px; justify-content:center;">
-    <img src="./public/Tailwind.png" width="180" />
-    <img src="./public/Laravel.png" width="180" />
-    <img src="./public/gsap.png" width="180" />
-  </div>
-
-  <!-- Row Bawah: 2 Gambar (Tengah) -->
-  <div style="display:flex; gap:16px; justify-content:center;">
-    <img src="./public/alpine.png" width="180" />
-    <img src="./public/smk.png" width="180" />
-  </div>
-
-</div>
-
-
-
-
+#  PintarYuk! — 
 ---
 
-#  PintarYuk! — 
+![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)![GSAP](https://img.shields.io/badge/gsap-%2388CE02.svg?style=for-the-badge&logo=greensock&logoColor=white)![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
+
 
 **PintarYuk!** adalah sebuah platform toko buku digital modern yang dirancang untuk merevolusi cara pengguna berinteraksi dengan buku secara online. Project ini dikembangkan sebagai inti project dalam program **Praktek Kerja Lapangan (PKL) SMK Assalaam Bandung**.
 
