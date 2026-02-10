@@ -1,7 +1,9 @@
 #  PintarYuk! — 
 ---
-
-![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)![GSAP](https://img.shields.io/badge/gsap-%2388CE02.svg?style=for-the-badge&logo=greensock&logoColor=white)![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
+<a href="#"><img src="https://img.shields.io/badge/Framework-Laravel-28CF8D?style=flat&colorA=18181B&logo=laravel" alt="Laravel"></a>
+<a href="#"><img src="https://img.shields.io/badge/Animation-GSAP-28CF8D?style=flat&colorA=18181B&logo=greensock" alt="GSAP"></a>
+<a href="#"><img src="https://img.shields.io/badge/CSS-Tailwind-28CF8D?style=flat&colorA=18181B&logo=tailwind-css" alt="Tailwind CSS"></a>
+<a href="#"><img src="https://img.shields.io/badge/Library-jQuery-28CF8D?style=flat&colorA=18181B&logo=jquery" alt="jQuery"></a>
 
 
 **PintarYuk!** adalah sebuah platform toko buku digital modern yang dirancang untuk merevolusi cara pengguna berinteraksi dengan buku secara online. Project ini dikembangkan sebagai inti project dalam program **Praktek Kerja Lapangan (PKL) SMK Assalaam Bandung**.
